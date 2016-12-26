@@ -1,0 +1,571 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>使用Instruments工具进行性能优化 | 启立哥的blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="麦家村村书记">
+    
+
+    
+    <meta name="description" content="Instruments 是应用程序用来动态跟踪和分析 Mac OS X 和 iOS 代码的实用工具。Instruments 下有各种功能，但今天就只对个人认为比较实用的 Time Profiler 、Core Animation 、Leak 和 Allocation 这四个工具进行调研。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Instruments工具进行性能优化">
+<meta property="og:url" content="http://www.qilishare.org/2016/02/27/Instruments调研/index.html">
+<meta property="og:site_name" content="启立哥的blog">
+<meta property="og:description" content="Instruments 是应用程序用来动态跟踪和分析 Mac OS X 和 iOS 代码的实用工具。Instruments 下有各种功能，但今天就只对个人认为比较实用的 Time Profiler 、Core Animation 、Leak 和 Allocation 这四个工具进行调研。">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/1.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/2.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/3.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/4.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/5.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/6.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/7.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/8.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/9.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/10.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/11.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/12.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/13.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/14.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/15.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/16.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/17.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/18.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/19.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/20.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/21.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/22.png">
+<meta property="og:image" content="http://qilishare.org/postImage/Instruments调研/23.png">
+<meta property="og:updated_time" content="2016-12-26T07:31:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Instruments工具进行性能优化">
+<meta name="twitter:description" content="Instruments 是应用程序用来动态跟踪和分析 Mac OS X 和 iOS 代码的实用工具。Instruments 下有各种功能，但今天就只对个人认为比较实用的 Time Profiler 、Core Animation 、Leak 和 Allocation 这四个工具进行调研。">
+<meta name="twitter:image" content="http://qilishare.org/postImage/Instruments调研/1.png">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="启立哥的blog">启立哥的blog</a></h1>
+				<h2 class="blog-motto">有时最远的路 就是最快的捷径</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.qilishare.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/02/27/Instruments调研/" title="使用Instruments工具进行性能优化" itemprop="url">使用Instruments工具进行性能优化</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-02-27T06:00:00.000Z" itemprop="datePublished"> 发表于 2016-02-27</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#（一）Time-Profiler"><span class="toc-number">1.</span> <span class="toc-text">（一）Time Profiler</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试app启动时间"><span class="toc-number">1.1.</span> <span class="toc-text">测试app启动时间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用NSLog"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.使用NSLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-使用TimeProfile-搜索-didFinishLaunchingWithOptions"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.使用TimeProfile 搜索 didFinishLaunchingWithOptions</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#call-tree-展开，查看具体调用情况"><span class="toc-number">1.2.</span> <span class="toc-text">call tree 展开，查看具体调用情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对app进行一些用户操作，观察内存变化"><span class="toc-number">1.3.</span> <span class="toc-text">对app进行一些用户操作，观察内存变化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#（二）Core-Animation"><span class="toc-number">2.</span> <span class="toc-text">（二）Core Animation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一些基础的概念"><span class="toc-number">2.1.</span> <span class="toc-text">一些基础的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕显示图像的原理："><span class="toc-number">2.1.1.</span> <span class="toc-text">屏幕显示图像的原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU与GPU-Graphics-Processing-Unit-图形处理器"><span class="toc-number">2.1.2.</span> <span class="toc-text">CPU与GPU (Graphics Processing Unit)图形处理器:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#卡顿产生的原因"><span class="toc-number">2.1.3.</span> <span class="toc-text">卡顿产生的原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何评测界面的流畅度"><span class="toc-number">2.1.4.</span> <span class="toc-text">如何评测界面的流畅度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Core-Animation工具"><span class="toc-number">2.2.</span> <span class="toc-text">Core Animation工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置参数说明："><span class="toc-number">2.2.1.</span> <span class="toc-text">设置参数说明：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Color-Blended-Layers"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">Color Blended Layers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Color-Hits-Green-and-Misses-Red"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">Color Hits Green and Misses Red</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Off-Screen-Rendering"><span class="toc-number">2.2.1.3.</span> <span class="toc-text">Off-Screen Rendering</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他选项简单说明："><span class="toc-number">2.2.1.4.</span> <span class="toc-text">其他选项简单说明：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Allocation"><span class="toc-number">2.3.</span> <span class="toc-text">Allocation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Allocation-检测内存是否及时释放"><span class="toc-number">2.3.1.</span> <span class="toc-text">使用 Allocation 检测内存是否及时释放</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Leak"><span class="toc-number">2.4.</span> <span class="toc-text">Leak</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>Instruments 是应用程序用来动态跟踪和分析 Mac OS X 和 iOS 代码的实用工具。Instruments 下有各种功能，但今天就只对个人认为比较实用的 Time Profiler 、Core Animation 、Leak 和 Allocation 这四个工具进行调研。</p>
+<a id="more"></a>
+<h1 id="（一）Time-Profiler"><a href="#（一）Time-Profiler" class="headerlink" title="（一）Time Profiler"></a>（一）Time Profiler</h1><p><img src="http://qilishare.org/postImage/Instruments调研/1.png" alt="Time Profiler界面"></p>
+<p>设置参数</p>
+<blockquote>
+<p>Separate by Thread： 每个线程应该分开考虑。只有这样你才能揪出那些大量占用CPU的”重”线程<br>Invert Call Tree： 从上倒下跟踪堆栈, 也就是说FuncA{FunB{FunC}} 勾选此项后堆栈以C-&gt;B-A 把调用层级最深的C显示在最外面<br>Hide System Libraries： 隐藏掉系统的代码，专注在自己的代码上<br>Flatten Recursion： 递归函数, 每个堆栈跟踪一个条目<br>Top Functions： 一个函数花费的时间直接在该函数中的总和，以及在函数调用该函数所花费的时间的总时间。因此，如果函数A调用B，那么A的时间报告在A花费的时间加上B花费的时间,这非常真有用，因为它可以让你每次下到调用堆栈时挑最大的时间数字，归零在你最耗时的方法。</p>
+</blockquote>
+<p>我的使用习惯来说，一般选择 Separate by Thread 、Invert Call Tree 和 Hide System Libraries 这三项。</p>
+<h2 id="测试app启动时间"><a href="#测试app启动时间" class="headerlink" title="测试app启动时间"></a>测试app启动时间</h2><p>两种方法：一种使用NSLog，另外一种使用Time Profiler。</p>
+<h3 id="1-使用NSLog"><a href="#1-使用NSLog" class="headerlink" title="1.使用NSLog"></a>1.使用NSLog</h3><p>在程序的 main 文件和 APPDelegate 的 - (void)applicationDidFinishLaunching:(UIApplication *)app 方法中记录时间差。<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Main.m</span></div><div class="line"></div><div class="line"><span class="built_in">CFAbsoluteTime</span> StartTime;</div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv) &#123;</div><div class="line">    StartTime = <span class="built_in">CFAbsoluteTimeGetCurrent</span>();</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//AppDelegate.m</span></div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)applicationDidFinishLaunching:(<span class="built_in">UIApplication</span> *)app &#123;</div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Launched in %f sec"</span>, <span class="built_in">CFAbsoluteTimeGetCurrent</span>() - StartTime);</div><div class="line">    &#125;);</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-使用TimeProfile-搜索-didFinishLaunchingWithOptions"><a href="#2-使用TimeProfile-搜索-didFinishLaunchingWithOptions" class="headerlink" title="2.使用TimeProfile 搜索 didFinishLaunchingWithOptions"></a>2.使用TimeProfile 搜索 didFinishLaunchingWithOptions</h3><p>在 call tree 输入框下搜索 didFinishLaunchingWithOptions 函数，可以获得的调用实际时间。</p>
+<p>两者对比：使用TimeProfile更接近实际的启动时间，使用NSLog更有利于自身的代码执行的优化，因为使用TimeProfile的启动时间里包括了系统调用app的部分延迟。</p>
+<h2 id="call-tree-展开，查看具体调用情况"><a href="#call-tree-展开，查看具体调用情况" class="headerlink" title="call tree 展开，查看具体调用情况"></a>call tree 展开，查看具体调用情况</h2><p><img src="http://qilishare.org/postImage/Instruments调研/2.png" alt="call tree展开"></p>
+<p>双击调用的函数，可以进入到具体代码的文件。<br><img src="http://qilishare.org/postImage/Instruments调研/3.png" alt="在Xcode查看具体函数调用"></p>
+<h2 id="对app进行一些用户操作，观察内存变化"><a href="#对app进行一些用户操作，观察内存变化" class="headerlink" title="对app进行一些用户操作，观察内存变化"></a>对app进行一些用户操作，观察内存变化</h2><p>这边我举一个例子，拖动一个类似于微博首页那样的 tableview 界面。</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/4.png" alt="拖动果盘信息流的TimeProfile内存占用"></p>
+<p>针对内存增高的部分，进行分析</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/5.png" alt="拖动果盘信息流的call tree展开"></p>
+<p>展开后可以查看占用比例，然后对占比偏高的部分进行检查，双击进入</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/6.png" alt="拖动果盘信息流的进入代码中1"><br><img src="http://qilishare.org/postImage/Instruments调研/7.png" alt="拖动果盘信息流的进入代码中2"></p>
+<p>去到具体的代码处，思考自己的代码消耗性能的原因，能否优化。</p>
+<h1 id="（二）Core-Animation"><a href="#（二）Core-Animation" class="headerlink" title="（二）Core Animation"></a>（二）Core Animation</h1><h2 id="一些基础的概念"><a href="#一些基础的概念" class="headerlink" title="一些基础的概念"></a>一些基础的概念</h2><h3 id="屏幕显示图像的原理："><a href="#屏幕显示图像的原理：" class="headerlink" title="屏幕显示图像的原理："></a>屏幕显示图像的原理：</h3><p>电子枪按照右面方式，从上到下一行行扫描，扫描完成后显示器就呈现一帧画面，随后电子枪回到初始位置继续下一次扫描。当电子枪换到新的一行，准备进行扫描时，显示器会发出一个水平同步信号（horizonal synchronization），简称 HSync；而当一帧画面绘制完成后，电子枪回复到原位，准备画下一帧前，显示器会发出一个垂直同步信号（vertical synchronization），简称 VSync。显示器通常以固定频率进行刷新，这个刷新率就是 VSync 信号产生的频率。</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/8.png" alt="屏幕显示图像的原理"></p>
+<h3 id="CPU与GPU-Graphics-Processing-Unit-图形处理器"><a href="#CPU与GPU-Graphics-Processing-Unit-图形处理器" class="headerlink" title="CPU与GPU (Graphics Processing Unit)图形处理器:"></a>CPU与GPU (Graphics Processing Unit)图形处理器:</h3><p>CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。<br><img src="http://qilishare.org/postImage/Instruments调研/9.png" alt="CPU与GPU关系示意图"></p>
+<h3 id="卡顿产生的原因"><a href="#卡顿产生的原因" class="headerlink" title="卡顿产生的原因"></a>卡顿产生的原因</h3><p>当CPU与GPU生成一帧的时间超过0.0167s（帧刷新频率为60次/秒）时，便会出现卡顿。</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/10.png" alt="卡顿产生示意图"></p>
+<h3 id="如何评测界面的流畅度"><a href="#如何评测界面的流畅度" class="headerlink" title="如何评测界面的流畅度"></a>如何评测界面的流畅度</h3><p>利用CADisplayLink:<br>CADisplayLink 是一个能让我们以和屏幕刷新率相同的频率将内容画到屏幕上的定时器，默认每秒运行60次。我们在应用中创建一个新的 CADisplayLink 对象，把它添加到一个runloop中，并给它提供一个 target 和selector 在屏幕刷新的时候调用。</p>
+<p>Demo: <a href="https://github.com/ibireme/YYText/blob/master/Demo/YYTextDemo/YYFPSLabel.m" target="_blank" rel="external">https://github.com/ibireme/YYText/blob/master/Demo/YYTextDemo/YYFPSLabel.m</a></p>
+<p>加一个CADisplayLink到主runloop中</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/11.png" alt="CADisplayLink到主runloop中"></p>
+<p>设置计数器，统计帧数</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/12.png" alt="CADisplayLink计数器"></p>
+<p>加入到主界面中</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/13.png" alt="帧数计算加到主界面中"></p>
+<h2 id="Core-Animation工具"><a href="#Core-Animation工具" class="headerlink" title="Core Animation工具"></a>Core Animation工具</h2><p><img src="http://qilishare.org/postImage/Instruments调研/14.png" alt="Core Animation工具界面"></p>
+<h3 id="设置参数说明："><a href="#设置参数说明：" class="headerlink" title="设置参数说明："></a>设置参数说明：</h3><blockquote>
+<p>Color Blended Layers – 混合图层<br>Color Hits Green and Misses Red - 绿色代表屏幕外缓冲区被复用，而红色代表当缓冲区被重新创建。<br>Color Copied Images –选项主要检查我们有无使用不正确图片格式<br>Color Immediately – 加快图层更新速度，每帧都更新图层，原来速率是10次/ms<br>Color Misaligned Images -这里会高亮那些被缩放或者拉伸以及没有正确对齐到像素边界的图片<br>Color Offscreen-Rendered Yellow - 这里会把那些需要离屏渲染的图层高亮成黄色。<br>Color OpenGL Fast Path Blue - 这个选项会对任何直接使用 OpenGL 绘制的图层进行高亮。<br>Flash Updated Regions - 这个选项会对重绘的内容高亮成黄色</p>
+</blockquote>
+<h4 id="Color-Blended-Layers"><a href="#Color-Blended-Layers" class="headerlink" title="Color Blended Layers"></a>Color Blended Layers</h4><p><img src="http://qilishare.org/postImage/Instruments调研/15.png" alt="Color Blended Layers"></p>
+<p>混合图层就会被显示为红色,而不透明的 layer 则是绿色。理论上越少红色区域越好。</p>
+<p>GPU 需要做合成工作，合成不透明层要比透明的层工作量少很多，因为没有那么多的数学运算在里面。实际上透明图层的使用比较难避免，而且实际使用中也没明显感觉到性能的差异，但一般来说尽量减少多个透明图层的叠加有利于屏幕的渲染。</p>
+<p>在 CAlayer 有 opaque 属性，如果 opaque = YES, 那么GPU将不会做任何合成计算，而是直接直接简单的复制颜色，不管下面还有什么东西。</p>
+<h4 id="Color-Hits-Green-and-Misses-Red"><a href="#Color-Hits-Green-and-Misses-Red" class="headerlink" title="Color Hits Green and Misses Red"></a>Color Hits Green and Misses Red</h4><p>很多视图 Layer 由于 Shadow、Mask 和 Gradient 等原因渲染很高，因此 UIKit 提供了API用于缓存这些 Layer：[layer setShouldRasterize:YES]，系统会将这些 Layer 缓存成 Bitmap 位图供渲染使用，如果失效时便丢弃这些 Bitmap 重新生成。图层 Rasterization 栅格化好处是对刷新率影响较小，坏处是删格化处理后的 Bitmap 缓存需要占用内存，而且当图层需要缩放时，要对删格化后的 Bitmap 做额外计算。 使用这个选项后时，如果 Rasterized 的 Layer 失效，便会标注为红色，如果有效标注为绿色。当测试的应用频繁闪现出红色标注图层时，表明对图层做的栅格化作用不大。（栅格化：将矢量图转为位图）</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/16.png" alt="矢量图与位图对比"></p>
+<p>绿色部分是对栅格化后的位图进行缓存的，红色则是不断新创建。</p>
+<p>retina显示屏下还要设置</p>
+<blockquote>
+<p>self.layer.rasterizationScale = [UIScreen mainScreen].scale;</p>
+</blockquote>
+<h4 id="Off-Screen-Rendering"><a href="#Off-Screen-Rendering" class="headerlink" title="Off-Screen Rendering"></a>Off-Screen Rendering</h4><p>On-Screen Rendering<br>意为当前屏幕渲染，指的是 GPU 的渲染操作是在当前用于显示的屏幕缓冲区中进行。</p>
+<p>Off-Screen Rendering<br>意为离屏渲染，指的是当图层属性的混合体被指定为在未预合成之前不能直接在屏幕中绘制时，离屏渲染就被唤起了。GPU 在当前屏幕缓冲区以外新开辟一个缓冲区进行渲染操作。</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/17.png" alt="离屏渲染"><br>黄色部分为离屏渲染，设置图层圆角、阴影、描边或模糊的操作就会开启离屏渲染，离屏渲染会消耗额外的 GPU 开销。</p>
+<p>我们可以选择栅格化图层，对图层进行位图缓存，减少离屏渲染的消耗。</p>
+<p>离屏渲染 VS CPU渲染<br>由于GPU的浮点运算能力比CPU强，CPU渲染的效率可能不如离屏渲染；但如果仅仅是实现一个简单的效果，直接使用CPU渲染的效率又可能比离屏渲染好，毕竟离屏渲染要涉及到缓冲区创建和上下文切换等耗时操作。</p>
+<p>如何选择是否使用图层的栅格化位图缓存策略？<br>当我们使用得当时，光栅化可以提供很大的性能优势，但是一定要避免作用在内容不断变动的图层上，否则它缓存方面的好处就会消失，反而会让性能变的更糟。</p>
+<h4 id="其他选项简单说明："><a href="#其他选项简单说明：" class="headerlink" title="其他选项简单说明："></a>其他选项简单说明：</h4><p>Color copied images<br>这个选项主要检查我们有无使用不正确图片格式,若是GPU不支持的色彩格式的图片则会标记为青色,则只能由CPU来进行处理。我们不希望在滚动视图的时候,CPU实时来进行处理,因为有可能会阻塞主线程。</p>
+<p>Color misaligned images<br>这个选项检查了图片是否被放缩,像素是否对齐。被放缩的图片会被标记为黄色,像素不对齐则会标注为紫色。</p>
+<p>Color OpenGL fast path blue<br>这个选项勾选后,由OpenGL compositor进行绘制的图层会标记为蓝色。这是一个好的结果。</p>
+<p>Flash updated regions<br>会标记屏幕上被快速更新的部分为黄色,我们希望只是更新的部分被标记完黄色。</p>
+<h2 id="Allocation"><a href="#Allocation" class="headerlink" title="Allocation"></a>Allocation</h2><p><img src="http://qilishare.org/postImage/Instruments调研/18.png" alt="Allocation界面"></p>
+<h3 id="使用-Allocation-检测内存是否及时释放"><a href="#使用-Allocation-检测内存是否及时释放" class="headerlink" title="使用 Allocation 检测内存是否及时释放"></a>使用 Allocation 检测内存是否及时释放</h3><p>我们可以在进入视图前点一次Mark Generation</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/19.png" alt="Allocation下Mark Generation"></p>
+<p>进入视图后mark一次，在视图退出后再点一次Mark，这样三次产生的 Generation分别记录了进入前、进入后、关闭后，再最后一个Generation应该内存被合理释放，否则就代表了在这个视图或操作中有泄漏或不合理的地方。</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/20.png" alt="Allocation再次Mark Generation"></p>
+<h2 id="Leak"><a href="#Leak" class="headerlink" title="Leak"></a>Leak</h2><p>leak 界面</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/21.png" alt="Leak界面"></p>
+<p>查看 leak 类型</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/22.png" alt="Leak类型"></p>
+<p>寻找具体原因</p>
+<p><img src="http://qilishare.org/postImage/Instruments调研/23.png" alt="Leak具体原因"></p>
+<p>常见的 Leak Demo：<a href="https://github.com/samlaudev/MemoryProblems" target="_blank" rel="external">https://github.com/samlaudev/MemoryProblems</a></p>
+<p>这里有一篇不错的关于 <a href="http://www.jianshu.com/p/1928b54e1253" target="_blank" rel="external">如何使用工具进行内存管理</a> 的文章，推荐一下。 </p>
+<p>调研使用到的参考文章：<br><a href="http://www.jianshu.com/p/9e1f0b44935c" target="_blank" rel="external">Time Profiler介绍</a><br><a href="http://www.cnblogs.com/ym123/p/4324335.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external"> IOS性能调优系列：使用Time Profiler发现性能瓶颈</a><br><a href="http://www.cocoachina.com/ios/20151130/14477.html" target="_blank" rel="external">如何让iOS 保持界面流畅？</a><br><a href="http://www.cocoachina.com/ios/20150429/11712.html" target="_blank" rel="external">WWDC心得与延伸:iOS图形性能</a><br><a href="http://segmentfault.com/a/1190000000390012" target="_blank" rel="external">iOS 开发：绘制像素到屏幕</a><br><a href="http://foggry.com/blog/2015/05/06/chi-ping-xuan-ran-xue-xi-bi-ji/" target="_blank" rel="external">离屏渲染学习笔记</a></p>
+<p>拓展阅读：<br><a href="http://tech.glowing.com/cn/usage-of-cadisplaylink/" target="_blank" rel="external">使用CADisplayLink实现果冻效果动画</a><br><a href="http://www.cocoachina.com/ios/20150106/10840.html" target="_blank" rel="external">iOS-Core-Animation-Advanced-Techniques(七)</a></p>
+<p>转载请注明原地址，启立哥的博客：<a href="http://qilishare.org/" target="_blank" rel="external">http://qilishare.org/</a> 谢谢！</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/性能优化/">性能优化</a><a href="/tags/深入浅出/">深入浅出</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/03/01/IOS富文本-Coretext学习教程（一）/" title="IOS富文本-Coretext学习教程（一）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  IOS富文本-Coretext学习教程（一）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/01/22/制作简单实用的ImagePicker/"  title="制作简单实用的ImagePicker">
+ <strong>下一篇：</strong><br/> 
+ <span>制作简单实用的ImagePicker
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/02/27/Instruments调研/" data-title="使用Instruments工具进行性能优化" data-url="http://www.qilishare.org/2016/02/27/Instruments调研/"></div>
+</section>
+
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#（一）Time-Profiler"><span class="toc-number">1.</span> <span class="toc-text">（一）Time Profiler</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试app启动时间"><span class="toc-number">1.1.</span> <span class="toc-text">测试app启动时间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用NSLog"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.使用NSLog</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-使用TimeProfile-搜索-didFinishLaunchingWithOptions"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.使用TimeProfile 搜索 didFinishLaunchingWithOptions</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#call-tree-展开，查看具体调用情况"><span class="toc-number">1.2.</span> <span class="toc-text">call tree 展开，查看具体调用情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对app进行一些用户操作，观察内存变化"><span class="toc-number">1.3.</span> <span class="toc-text">对app进行一些用户操作，观察内存变化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#（二）Core-Animation"><span class="toc-number">2.</span> <span class="toc-text">（二）Core Animation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一些基础的概念"><span class="toc-number">2.1.</span> <span class="toc-text">一些基础的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕显示图像的原理："><span class="toc-number">2.1.1.</span> <span class="toc-text">屏幕显示图像的原理：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CPU与GPU-Graphics-Processing-Unit-图形处理器"><span class="toc-number">2.1.2.</span> <span class="toc-text">CPU与GPU (Graphics Processing Unit)图形处理器:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#卡顿产生的原因"><span class="toc-number">2.1.3.</span> <span class="toc-text">卡顿产生的原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何评测界面的流畅度"><span class="toc-number">2.1.4.</span> <span class="toc-text">如何评测界面的流畅度</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Core-Animation工具"><span class="toc-number">2.2.</span> <span class="toc-text">Core Animation工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置参数说明："><span class="toc-number">2.2.1.</span> <span class="toc-text">设置参数说明：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Color-Blended-Layers"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">Color Blended Layers</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Color-Hits-Green-and-Misses-Red"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">Color Hits Green and Misses Red</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Off-Screen-Rendering"><span class="toc-number">2.2.1.3.</span> <span class="toc-text">Off-Screen Rendering</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他选项简单说明："><span class="toc-number">2.2.1.4.</span> <span class="toc-text">其他选项简单说明：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Allocation"><span class="toc-number">2.3.</span> <span class="toc-text">Allocation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-Allocation-检测内存是否及时释放"><span class="toc-number">2.3.1.</span> <span class="toc-text">使用 Allocation 检测内存是否及时释放</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Leak"><span class="toc-number">2.4.</span> <span class="toc-text">Leak</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/ios/" title="ios">ios<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/技术分享/" title="技术分享">技术分享<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/coretext/" title="coretext">coretext<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/自定义控件/" title="自定义控件">自定义控件<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/性能优化/" title="性能优化">性能优化<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/深入浅出/" title="深入浅出">深入浅出<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/控件/" title="控件">控件<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/简单实用/" title="简单实用">简单实用<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/blog/" title="blog">blog<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> “我是一枚专注于IOS的攻城狮&quot; <br/>
+			“希望能和大家互相学习，一起成长”</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1852525747" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/maiqili" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/qi-li-67-79" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:517184297@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="麦家村村书记">麦家村村书记</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"maiqili"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'httpqilishareorg';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?199a62a1066f0631b339bb0186bffedc";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
