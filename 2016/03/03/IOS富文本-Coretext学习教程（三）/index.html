@@ -1,0 +1,501 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>IOS富文本-Coretext学习教程（三） | 启立哥的blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="麦家村村书记">
+    
+
+    
+    <meta name="description" content="这一章，我们来实现文字点击处理
+文字点击处理有两种实现的方式一种是利用 CTLineGetStringIndexForPosition 方法找到点击的文字在 attributedString 中的位置，另一种是通过在外部传入特殊样式的文字属性 attributedItem 然后进行匹配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOS富文本-Coretext学习教程（三）">
+<meta property="og:url" content="http://www.qilishare.org/2016/03/03/IOS富文本-Coretext学习教程（三）/index.html">
+<meta property="og:site_name" content="启立哥的blog">
+<meta property="og:description" content="这一章，我们来实现文字点击处理
+文字点击处理有两种实现的方式一种是利用 CTLineGetStringIndexForPosition 方法找到点击的文字在 attributedString 中的位置，另一种是通过在外部传入特殊样式的文字属性 attributedItem 然后进行匹配">
+<meta property="og:image" content="http://qilishare.org/postImage/CoreText学习教程/11.png">
+<meta property="og:image" content="http://qilishare.org/postImage/CoreText学习教程/12.png">
+<meta property="og:image" content="http://qilishare.org/postImage/CoreText学习教程/13.png">
+<meta property="og:image" content="http://qilishare.org/postImage/CoreText学习教程/14.png">
+<meta property="og:image" content="http://qilishare.org/postImage/CoreText学习教程/15.png">
+<meta property="og:updated_time" content="2016-03-03T03:41:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IOS富文本-Coretext学习教程（三）">
+<meta name="twitter:description" content="这一章，我们来实现文字点击处理
+文字点击处理有两种实现的方式一种是利用 CTLineGetStringIndexForPosition 方法找到点击的文字在 attributedString 中的位置，另一种是通过在外部传入特殊样式的文字属性 attributedItem 然后进行匹配">
+<meta name="twitter:image" content="http://qilishare.org/postImage/CoreText学习教程/11.png">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="启立哥的blog">启立哥的blog</a></h1>
+				<h2 class="blog-motto">有时最远的路 就是最快的捷径</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.qilishare.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/03/IOS富文本-Coretext学习教程（三）/" title="IOS富文本-Coretext学习教程（三）" itemprop="url">IOS富文本-Coretext学习教程（三）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-03T08:00:00.000Z" itemprop="datePublished"> 发表于 2016-03-03</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#文字点击处理"><span class="toc-number">1.</span> <span class="toc-text">文字点击处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CTLineGetStringIndexForPosition方法查找"><span class="toc-number">1.1.</span> <span class="toc-text">CTLineGetStringIndexForPosition方法查找</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过返回CTRun的NSRange进行判断点击的范围"><span class="toc-number">1.2.</span> <span class="toc-text">通过返回CTRun的NSRange进行判断点击的范围</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>这一章，我们来实现文字点击处理</p>
+<h1 id="文字点击处理"><a href="#文字点击处理" class="headerlink" title="文字点击处理"></a>文字点击处理</h1><p>有两种实现的方式一种是利用 CTLineGetStringIndexForPosition 方法找到点击的文字在 attributedString 中的位置，另一种是通过在外部传入特殊样式的文字属性 attributedItem 然后进行匹配<br><a id="more"></a><br>先说第一种</p>
+<h2 id="CTLineGetStringIndexForPosition方法查找"><a href="#CTLineGetStringIndexForPosition方法查找" class="headerlink" title="CTLineGetStringIndexForPosition方法查找"></a>CTLineGetStringIndexForPosition方法查找</h2><p>先实现点击事件的监听<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">UITouch</span> *touch = [touches anyObject];</div><div class="line">    <span class="built_in">CFIndex</span> index = [<span class="keyword">self</span> characterIndexAtPoint:[touch locationInView:<span class="keyword">self</span>]];</div><div class="line">    <span class="built_in">NSLog</span>(<span class="string">@"点击了index：%ld"</span>,index);</div><div class="line">    [<span class="keyword">super</span> touchesBegan:touches withEvent:event];</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>查找点击的index<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">CFIndex</span>)characterIndexAtPoint:(<span class="built_in">CGPoint</span>)point &#123;</div><div class="line">    </div><div class="line">    <span class="built_in">CTFramesetterRef</span> framesetter = <span class="built_in">CTFramesetterCreateWithAttributedString</span>((__bridge <span class="built_in">CFAttributedStringRef</span>)<span class="keyword">self</span>.attributedText);</div><div class="line">    </div><div class="line">    <span class="comment">// 翻转坐标系</span></div><div class="line">    <span class="built_in">CGAffineTransform</span> transform =  <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="number">0</span>, <span class="built_in">CGRectGetHeight</span>(<span class="keyword">self</span>.bounds));</div><div class="line">    transform = <span class="built_in">CGAffineTransformScale</span>(transform, <span class="number">1.</span>f, <span class="number">-1.</span>f);</div><div class="line">    </div><div class="line">    <span class="comment">//根据self.bounds相对点击位置</span></div><div class="line">    point = <span class="built_in">CGPointMake</span>(point.x - <span class="keyword">self</span>.bounds.origin.x, point.y - <span class="keyword">self</span>.bounds.origin.y);</div><div class="line">    point = <span class="built_in">CGPointMake</span>(point.x, <span class="keyword">self</span>.bounds.size.height - point.y);</div><div class="line">    </div><div class="line">    <span class="comment">//显示点击的位置</span></div><div class="line">    <span class="built_in">CALayer</span> *pointRect = [[<span class="built_in">CALayer</span> alloc] init];</div><div class="line">    <span class="built_in">CGRect</span> pointFrame = <span class="built_in">CGRectApplyAffineTransform</span>(<span class="built_in">CGRectMake</span>(point.x, point.y, <span class="number">2</span>, <span class="number">2</span>), transform);</div><div class="line">    pointRect.frame = pointFrame;</div><div class="line">    pointRect.backgroundColor = [<span class="built_in">UIColor</span> blueColor].CGColor;</div><div class="line">    [<span class="keyword">self</span>.layer addSublayer:pointRect];</div><div class="line">    </div><div class="line">    <span class="built_in">CGMutablePathRef</span> path = <span class="built_in">CGPathCreateMutable</span>();</div><div class="line">    <span class="built_in">CGPathAddRect</span>(path, <span class="literal">NULL</span>, <span class="keyword">self</span>.bounds);</div><div class="line">    </div><div class="line">    <span class="built_in">CTFrameRef</span> frame = <span class="built_in">CTFramesetterCreateFrame</span>(framesetter, <span class="built_in">CFRangeMake</span>(<span class="number">0</span>, [<span class="keyword">self</span>.attributedText length]), path, <span class="literal">NULL</span>);</div><div class="line">    <span class="comment">//获取基线的数组</span></div><div class="line">    <span class="built_in">CFArrayRef</span> lines = <span class="built_in">CTFrameGetLines</span>(frame);</div><div class="line">    </div><div class="line">    <span class="built_in">NSInteger</span> numberOfLines = <span class="built_in">CFArrayGetCount</span>(lines);</div><div class="line">    </div><div class="line">    <span class="built_in">NSUInteger</span> idx = <span class="built_in">NSNotFound</span>;</div><div class="line">    </div><div class="line">    <span class="comment">//获得基准点数组</span></div><div class="line">    <span class="built_in">CGPoint</span> lineOrigins[numberOfLines];</div><div class="line">    <span class="built_in">CTFrameGetLineOrigins</span>(frame, <span class="built_in">CFRangeMake</span>(<span class="number">0</span>, numberOfLines), lineOrigins);</div><div class="line">    </div><div class="line">    <span class="comment">//遍历每一行</span></div><div class="line">    <span class="keyword">for</span> (<span class="built_in">CFIndex</span> lineIndex = <span class="number">0</span>; lineIndex &lt; numberOfLines; lineIndex++) &#123;</div><div class="line">        </div><div class="line">        <span class="built_in">CGPoint</span> lineOrigin = lineOrigins[lineIndex];</div><div class="line">        <span class="built_in">CTLineRef</span> line = <span class="built_in">CFArrayGetValueAtIndex</span>(lines, lineIndex);</div><div class="line">        <span class="comment">// 获得每一行的CGRect信息</span></div><div class="line">        <span class="built_in">CGRect</span> flippedRect = [<span class="keyword">self</span> getLineBounds:line point:lineOrigin];</div><div class="line">        <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectApplyAffineTransform</span>(flippedRect, transform);</div><div class="line">        </div><div class="line">        <span class="built_in">CGFloat</span> ascent, descent, leading, width;</div><div class="line">        width = <span class="built_in">CTLineGetTypographicBounds</span>(line, &amp;ascent, &amp;descent, &amp;leading);</div><div class="line">        <span class="built_in">CGFloat</span> yMin = lineOrigin.y - descent;</div><div class="line">        </div><div class="line">        <span class="comment">//显示基线</span></div><div class="line">        <span class="built_in">CALayer</span> *lineLayer = [[<span class="built_in">CALayer</span> alloc] init];</div><div class="line">        <span class="built_in">CGRect</span> lineRect = <span class="built_in">CGRectApplyAffineTransform</span>(<span class="built_in">CGRectMake</span>(lineOrigin.x, lineOrigin.y, width, <span class="number">1</span>), transform);</div><div class="line">        lineLayer.frame = lineRect;</div><div class="line">        lineLayer.backgroundColor = [<span class="built_in">UIColor</span> redColor].CGColor;</div><div class="line">        lineLayer.opacity = <span class="number">0.5</span>;</div><div class="line">        [<span class="keyword">self</span>.layer addSublayer:lineLayer];</div><div class="line">        </div><div class="line">        <span class="comment">//显示该行的CTLine的范围</span></div><div class="line">        <span class="built_in">CALayer</span> *rectLayer = [[<span class="built_in">CALayer</span> alloc] init];</div><div class="line">        rectLayer.frame = rect;</div><div class="line">        rectLayer.backgroundColor = [<span class="keyword">self</span> randomColor].CGColor;</div><div class="line">        rectLayer.opacity = <span class="number">0.3</span>;</div><div class="line">        [<span class="keyword">self</span>.layer addSublayer:rectLayer];</div><div class="line">        </div><div class="line">        <span class="comment">//判断点击点与该行最小值得位置关系</span></div><div class="line">        <span class="keyword">if</span> (point.y &gt;= yMin) &#123;</div><div class="line">            <span class="keyword">if</span> (point.x &gt;= lineOrigin.x &amp;&amp; point.x &lt;= lineOrigin.x + width) &#123;</div><div class="line">                </div><div class="line">                <span class="built_in">CGPoint</span> relativePoint = <span class="built_in">CGPointMake</span>(point.x - lineOrigin.x, point.y - yMin);</div><div class="line">                idx = <span class="built_in">CTLineGetStringIndexForPosition</span>(line, relativePoint);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    [<span class="keyword">self</span> setNeedsDisplay];</div><div class="line">    <span class="built_in">CFRelease</span>(frame);</div><div class="line">    <span class="built_in">CFRelease</span>(path);</div><div class="line">    <span class="built_in">CFRelease</span>(framesetter);</div><div class="line">    <span class="keyword">return</span> idx;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>为了方便观察，我在相应的位置上加了一层 layer ，大家不需要的话，可以自己去掉</p>
+<p>在进行点击后</p>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/11.png" alt="点击后控件示意图"></p>
+<p>红色的线是每一行的基线，随机颜色是每行 CTLine 的 Frame 范围，蓝色的是点击的位置</p>
+<p>控制台打印结果</p>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/12.png" alt="log"></p>
+<h2 id="通过返回CTRun的NSRange进行判断点击的范围"><a href="#通过返回CTRun的NSRange进行判断点击的范围" class="headerlink" title="通过返回CTRun的NSRange进行判断点击的范围"></a>通过返回CTRun的NSRange进行判断点击的范围</h2><p>这种方式是基于实际应用场景的一个做法，因为，我们在使用富文本控件时，都是想对某一范围内的词组、链接或特殊标签进行特殊的设置（如：颜色、大小等），所以在 coretext 绘制时，必然会用独立的 CTRun 进行处理，所以，我们利用我们点击的位置和 CTRun 的Rect进行匹配，然后返回，再判断返回的范围是否在特殊字样的范围中，然后再通过 delagete 或 notification 回调是否点击了某个特殊字样。</p>
+<p>添加一个类用来存放特定参数<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">QLCoreTextAttributeItem</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *textColor;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *highLigthColor;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIFont</span> *font;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSRange</span> attributeRange; </div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure></p>
+<p>进行简单的设置后，在控制器中传入，并用一个数组存放</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">QLCoreTextAttributeItem *attributeItem = <span class="comment">[<span class="comment">[QLCoreTextAttributeItem alloc]</span> init]</span>;</div><div class="line">attributeItem.textColor = <span class="comment">[UIColor redColor]</span>;</div><div class="line">attributeItem.attributeRange = NSMakeRange(6, 3);</div><div class="line">attributeItem.font = <span class="comment">[UIFont systemFontOfSize:17]</span>;</div><div class="line"></div><div class="line">QLCoreTextAttributeItem *attributeItem2 = <span class="comment">[<span class="comment">[QLCoreTextAttributeItem alloc]</span> init]</span>;</div><div class="line">attributeItem2.textColor = <span class="comment">[UIColor whiteColor]</span>;</div><div class="line">attributeItem2.attributeRange = NSMakeRange(46, 4);</div><div class="line">attributeItem2.highLigthColor = <span class="comment">[UIColor redColor]</span>;</div><div class="line">attributeItem2.font = <span class="comment">[UIFont systemFontOfSize:28]</span>;</div><div class="line"></div><div class="line">QLCoreTextAttributeItem *attributeItem3 = <span class="comment">[<span class="comment">[QLCoreTextAttributeItem alloc]</span> init]</span>;</div><div class="line">attributeItem3.textColor = <span class="comment">[UIColor yellowColor]</span>;</div><div class="line">attributeItem3.attributeRange = NSMakeRange(38, 2);</div><div class="line">attributeItem3.highLigthColor = <span class="comment">[UIColor redColor]</span>;</div><div class="line">attributeItem3.font = <span class="comment">[UIFont systemFontOfSize:30]</span>;</div><div class="line"></div><div class="line">coretext.attributeItemArray = <span class="comment">[NSArray arrayWithObjects:attributeItem,attributeItem2,attributeItem3,nil]</span>;</div></pre></td></tr></table></figure>
+<p>并在 coretext 控件中设置数组中的特殊样式</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-(<span class="keyword">void</span>)setAttributeItemArray:(<span class="built_in">NSArray</span> *)attributeItemArray</div><div class="line">&#123;</div><div class="line">    _attributeItemArray = attributeItemArray;</div><div class="line">    <span class="keyword">for</span> (QLCoreTextAttributeItem *attributeItem <span class="keyword">in</span> _attributeItemArray) &#123;</div><div class="line">        <span class="built_in">NSDictionary</span> *attributeDict = @&#123;</div><div class="line">                                        <span class="built_in">NSForegroundColorAttributeName</span>:(<span class="keyword">id</span>)attributeItem.textColor,</div><div class="line">                                        <span class="built_in">NSFontAttributeName</span>:(<span class="keyword">id</span>)attributeItem.font</div><div class="line">                                        &#125;;</div><div class="line">        [<span class="keyword">self</span>.attributedText addAttributes:attributeDict range:attributeItem.attributeRange];</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/13.png" alt="显示效果"></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">QLCoreTextAttributeItem</span> : <span class="title">NSObject</span></span></div><div class="line"></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *textColor;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIColor</span> *highLigthColor;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">UIFont</span> *font;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;  </div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">NSRange</span> attributeRange; </div><div class="line"></div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+<p>然后进行点击</p>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/14.png" alt="点击后效果"></p>
+<p>检测点击范围的实现代码如下</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line">- (<span class="built_in">NSRange</span>)ctRunRangeAtPoint:(<span class="built_in">CGPoint</span>)point&#123;</div><div class="line">    <span class="built_in">CTFramesetterRef</span> framesetter = <span class="built_in">CTFramesetterCreateWithAttributedString</span>((__bridge <span class="built_in">CFAttributedStringRef</span>)<span class="keyword">self</span>.attributedText);</div><div class="line">    <span class="built_in">CGMutablePathRef</span> path = <span class="built_in">CGPathCreateMutable</span>();</div><div class="line">    <span class="built_in">CGPathAddRect</span>(path, <span class="literal">NULL</span>, <span class="keyword">self</span>.bounds);</div><div class="line">    </div><div class="line">    <span class="built_in">CTFrameRef</span> textFrame;</div><div class="line">    textFrame = <span class="built_in">CTFramesetterCreateFrame</span>(framesetter, <span class="built_in">CFRangeMake</span>(<span class="number">0</span>, [<span class="keyword">self</span>.attributedText length]), path, <span class="literal">NULL</span>);</div><div class="line">    <span class="built_in">CFArrayRef</span> lines = <span class="built_in">CTFrameGetLines</span>(textFrame);</div><div class="line">    <span class="built_in">CFIndex</span> count = <span class="built_in">CFArrayGetCount</span>(lines);</div><div class="line">    </div><div class="line">    <span class="comment">// 获得每一行的origin坐标</span></div><div class="line">    <span class="built_in">CGPoint</span> origins[count];</div><div class="line">    <span class="built_in">CTFrameGetLineOrigins</span>(textFrame, <span class="built_in">CFRangeMake</span>(<span class="number">0</span>,<span class="number">0</span>), origins);</div><div class="line">    </div><div class="line">    <span class="comment">// 翻转坐标系</span></div><div class="line">    <span class="built_in">CGAffineTransform</span> transform =  <span class="built_in">CGAffineTransformMakeTranslation</span>(<span class="number">0</span>, <span class="keyword">self</span>.bounds.size.height);</div><div class="line">    transform = <span class="built_in">CGAffineTransformScale</span>(transform, <span class="number">1.</span>f, <span class="number">-1.</span>f);</div><div class="line">    </div><div class="line">    <span class="built_in">NSRange</span> runRange = QLRangeNotFound;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</div><div class="line">        <span class="built_in">CGPoint</span> linePoint = origins[i];</div><div class="line">        <span class="built_in">CTLineRef</span> line = <span class="built_in">CFArrayGetValueAtIndex</span>(lines, i);</div><div class="line">        </div><div class="line">        <span class="comment">// 获得每一行的CGRect信息</span></div><div class="line">        <span class="built_in">CGRect</span> flippedRect = [<span class="keyword">self</span> getLineBounds:line point:linePoint];</div><div class="line">        <span class="built_in">CGRect</span> rect = <span class="built_in">CGRectApplyAffineTransform</span>(flippedRect, transform);</div><div class="line">        </div><div class="line">        <span class="keyword">if</span> (point.y &lt; <span class="built_in">CGRectGetMinY</span>(rect)) &#123;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="built_in">CALayer</span> *lineLayer = [[<span class="built_in">CALayer</span> alloc] init];</div><div class="line">        <span class="built_in">CGRect</span> lineLayerFrame = <span class="built_in">CGRectApplyAffineTransform</span>(<span class="built_in">CGRectMake</span>(<span class="number">0</span>, linePoint.y - <span class="built_in">CGRectGetMinY</span>(<span class="keyword">self</span>.bounds), <span class="built_in">CGRectGetWidth</span>(<span class="keyword">self</span>.bounds), <span class="number">1</span>), transform);</div><div class="line">        lineLayer.frame = lineLayerFrame;</div><div class="line">        lineLayer.backgroundColor = [<span class="built_in">UIColor</span> redColor].CGColor;</div><div class="line">        <span class="comment">//lineLayer.opacity = 0.5;</span></div><div class="line">        [<span class="keyword">self</span>.layer addSublayer:lineLayer];</div><div class="line">        </div><div class="line">        <span class="built_in">CFArrayRef</span> runs = <span class="built_in">CTLineGetGlyphRuns</span>(line);</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; <span class="built_in">CFArrayGetCount</span>(runs); j++) &#123;</div><div class="line">            <span class="comment">// 遍历每一个CTRun</span></div><div class="line">            <span class="built_in">CGFloat</span> runAscent,runDescent,lineSpace;</div><div class="line">            <span class="comment">// 获取当前的CTRun</span></div><div class="line">            <span class="built_in">CTRunRef</span> run = <span class="built_in">CFArrayGetValueAtIndex</span>(runs, j);</div><div class="line">            <span class="built_in">CGRect</span> runRect;</div><div class="line">            runRect.size.width = <span class="built_in">CTRunGetTypographicBounds</span>(run, <span class="built_in">CFRangeMake</span>(<span class="number">0</span>,<span class="number">0</span>), &amp;runAscent, &amp;runDescent, &amp;lineSpace);</div><div class="line"></div><div class="line">            runRect = <span class="built_in">CGRectMake</span>(linePoint.x + <span class="built_in">CTLineGetOffsetForStringIndex</span>(line, <span class="built_in">CTRunGetStringRange</span>(run).location, <span class="literal">NULL</span>), linePoint.y - runDescent - <span class="built_in">CGRectGetMinY</span>(<span class="keyword">self</span>.bounds), runRect.size.width, runAscent + runDescent + lineSpace);</div><div class="line">            runRect = <span class="built_in">CGRectApplyAffineTransform</span>(runRect, transform);</div><div class="line">            </div><div class="line">            <span class="built_in">CALayer</span> *ctRunLayer = [[<span class="built_in">CALayer</span> alloc] init];</div><div class="line">            ctRunLayer.frame = runRect;</div><div class="line">            ctRunLayer.backgroundColor = [<span class="keyword">self</span> randomColor].CGColor;</div><div class="line">            ctRunLayer.opacity = <span class="number">0.5</span>;</div><div class="line">            [<span class="keyword">self</span>.layer addSublayer:ctRunLayer];</div><div class="line">            </div><div class="line">            <span class="built_in">CFRange</span> ctRunRange = <span class="built_in">CTRunGetStringRange</span>(run);</div><div class="line">            </div><div class="line">            <span class="keyword">if</span> (<span class="built_in">CGRectContainsPoint</span>(runRect, point)) &#123;</div><div class="line">                <span class="comment">// 获得当前点击坐标对应的点击范围</span></div><div class="line">                runRange = <span class="built_in">NSMakeRange</span>(ctRunRange.location, ctRunRange.length);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="built_in">CFRelease</span>(framesetter);</div><div class="line">    <span class="built_in">CFRelease</span>(textFrame);</div><div class="line">    <span class="built_in">CFRelease</span>(path);</div><div class="line">    <span class="keyword">return</span> runRange;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)<span class="string">touchesBegan:</span>(NSSet *)touches <span class="string">withEvent:</span>(UIEvent *)event &#123;</div><div class="line">    </div><div class="line">    UITouch *touch = [touches anyObject];</div><div class="line">    </div><div class="line">    <span class="comment">//    //方法一</span></div><div class="line">    <span class="comment">//    CFIndex index = [self characterIndexAtPoint:[touch locationInView:self]];</span></div><div class="line">    <span class="comment">//    NSLog(@"点击了index：%ld",index);</span></div><div class="line">    </div><div class="line">    <span class="comment">//方法二</span></div><div class="line">    NSRange touchBeginRange = [self <span class="string">ctRunRangeAtPoint:</span>[touch <span class="string">locationInView:</span>self]];</div><div class="line">    [self <span class="string">selectAttributeItem:</span>touchBeginRange];</div><div class="line">    </div><div class="line">    [<span class="keyword">super</span> <span class="string">touchesBegan:</span>touches <span class="string">withEvent:</span>event];</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">- (<span class="keyword">void</span>)selectAttributeItem:(<span class="built_in">NSRange</span>)range</div><div class="line">&#123;</div><div class="line">    <span class="comment">//判断点击的NSRange是否在设置的attributeItemArray数组中</span></div><div class="line">    <span class="keyword">for</span> (QLCoreTextAttributeItem *attributedItem <span class="keyword">in</span> <span class="keyword">self</span>.attributeItemArray) &#123;</div><div class="line">        <span class="keyword">if</span> (QLRangeContain(attributedItem.attributeRange, range)) &#123;</div><div class="line">            attributedItem.text = [<span class="keyword">self</span>.attributedText attributedSubstringFromRange:attributedItem.attributeRange].string;</div><div class="line">            <span class="built_in">NSLog</span>(<span class="string">@"点击了：%@"</span>,attributedItem.text);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>范围判断的宏</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-id">#define</span> <span class="selector-tag">QLRangeContain</span>(rangeA, rangeB) (rangeA.length &gt;= rangeB.length &amp;&amp; ((rangeA.location &lt;= rangeB.location) &amp;&amp; (NSMaxRange(rangeA) &gt;= NSMaxRange(rangeB))))?<span class="selector-tag">YES</span><span class="selector-pseudo">:NO</span></div></pre></td></tr></table></figure>
+<p>控制台打印</p>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/15.png" alt="log"></p>
+<p>转载请注明原地址，启立哥的博客：<a href="http://qilishare.org/" target="_blank" rel="external">http://qilishare.org/</a> 谢谢！</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/coretext/">coretext</a><a href="/tags/自定义控件/">自定义控件</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	<div class="share-jiathis">
+	  
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_googleplus"></a>
+	<a class="jiathis_button_douban"></a>
+	<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+    var jiathis_config={
+    data_track_clickback:true,
+    sm:"copy,renren,cqq",
+    pic:"",
+    summary:"",
+    
+  </script> 
+<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=
+" charset="utf-8"></script>      
+
+	 </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/03/02/IOS富文本-Coretext学习教程（二）/"  title="IOS富文本-Coretext学习教程（二）">
+ <strong>下一篇：</strong><br/> 
+ <span>IOS富文本-Coretext学习教程（二）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/03/03/IOS富文本-Coretext学习教程（三）/" data-title="IOS富文本-Coretext学习教程（三）" data-url="http://www.qilishare.org/2016/03/03/IOS富文本-Coretext学习教程（三）/"></div>
+</section>
+
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#文字点击处理"><span class="toc-number">1.</span> <span class="toc-text">文字点击处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CTLineGetStringIndexForPosition方法查找"><span class="toc-number">1.1.</span> <span class="toc-text">CTLineGetStringIndexForPosition方法查找</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过返回CTRun的NSRange进行判断点击的范围"><span class="toc-number">1.2.</span> <span class="toc-text">通过返回CTRun的NSRange进行判断点击的范围</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/ios/" title="ios">ios<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/技术分享/" title="技术分享">技术分享<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/coretext/" title="coretext">coretext<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/自定义控件/" title="自定义控件">自定义控件<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/控件/" title="控件">控件<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/简单实用/" title="简单实用">简单实用<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/性能优化/" title="性能优化">性能优化<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/深入浅出/" title="深入浅出">深入浅出<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/blog/" title="blog">blog<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> “我是一枚专注于IOS的攻城狮&quot; <br/>
+			“希望能和大家互相学习，一起成长”</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1852525747" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/maiqili" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/qi-li-67-79" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:517184297@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="麦家村村书记">麦家村村书记</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"maiqili"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'httpqilishareorg';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?199a62a1066f0631b339bb0186bffedc";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

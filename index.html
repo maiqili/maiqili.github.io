@@ -1,220 +1,620 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://www.qilishare.org/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-  
 
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>启立哥的blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="麦家村村书记">
+    
+
+    
+    <meta name="description" content="What？">
+<meta property="og:type" content="website">
+<meta property="og:title" content="启立哥的blog">
+<meta property="og:url" content="http://www.qilishare.org/index.html">
+<meta property="og:site_name" content="启立哥的blog">
+<meta property="og:description" content="What？">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="启立哥的blog">
+<meta name="twitter:description" content="What？">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
+  <body>
+    <header>
       
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.qilishare.org"></form>
-      </div>
-    </div>
-  </div>
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="启立哥的blog">启立哥的blog</a></h1>
+				<h2 class="blog-motto">有时最远的路 就是最快的捷径</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.qilishare.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main">
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/03/IOS富文本-Coretext学习教程（三）/" title="IOS富文本-Coretext学习教程（三）" itemprop="url">IOS富文本-Coretext学习教程（三）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-03T08:00:00.000Z" itemprop="datePublished"> 发表于 2016-03-03</time>
+    
+  </p>
 </header>
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-Hello-Hexo" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/26/Hello-Hexo/" class="article-date">
-  <time datetime="2016-12-26T07:14:27.000Z" itemprop="datePublished">2016-12-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
+    <div class="article-content">
         
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/26/Hello-Hexo/">Hello Hexo</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+        <p>这一章，我们来实现文字点击处理</p>
+<h1 id="文字点击处理"><a href="#文字点击处理" class="headerlink" title="文字点击处理"></a>文字点击处理</h1><p>有两种实现的方式一种是利用 CTLineGetStringIndexForPosition 方法找到点击的文字在 attributedString 中的位置，另一种是通过在外部传入特殊样式的文字属性 attributedItem 然后进行匹配<br>
         
-      
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/03/03/IOS富文本-Coretext学习教程（三）/#more">Read More</a>
+          
+       </p>
     </div>
-    <footer class="article-footer">
-      <a data-url="http://www.qilishare.org/2016/12/26/Hello-Hexo/" data-id="cix5raa5o0000jx00ek6mvp0m" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
 
 
+  <div class="article-tags">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/26/hello-world/" class="article-date">
-  <time datetime="2016-12-26T07:07:49.000Z" itemprop="datePublished">2016-12-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/26/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://www.qilishare.org/2016/12/26/hello-world/" data-id="cix5raa5s0001jx00ut2c6euo" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul>
-    </div>
+  <span></span> <a href="/tags/coretext/">coretext</a><a href="/tags/自定义控件/">自定义控件</a>
   </div>
 
+</div>
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2016/12/26/Hello-Hexo/">Hello Hexo</a>
-          </li>
-        
-          <li>
-            <a href="/2016/12/26/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
 
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/03/03/IOS富文本-Coretext学习教程（三）/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/03/03/IOS富文本-Coretext学习教程（三）/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
 </footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+
+
+    </article>
+
+
+
+
+
+
+   
     
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/02/IOS富文本-Coretext学习教程（二）/" title="IOS富文本-Coretext学习教程（二）" itemprop="url">IOS富文本-Coretext学习教程（二）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-02T07:00:00.000Z" itemprop="datePublished"> 发表于 2016-03-02</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>紧接着上一章的内容，在我们使用像UILabel的时候，经常会需要设置固定行数或者设置 numberOfLines 为0自动换行，而超过固定控件的最大高度时又会显示省略号，这篇文主要聊聊如何实现排版的行数显示设置和省略号的放置问题</p>
+<h1 id="行数和省略号处理"><a href="#行数和省略号处理" class="headerlink" title="行数和省略号处理"></a>行数和省略号处理</h1><p>在按照上一章的知识我们画出来的东西是这样的，我给背景加了颜色，使大家更好理解<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/03/02/IOS富文本-Coretext学习教程（二）/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
 
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/coretext/">coretext</a><a href="/tags/自定义控件/">自定义控件</a>
   </div>
-</body>
-</html>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/03/02/IOS富文本-Coretext学习教程（二）/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/03/02/IOS富文本-Coretext学习教程（二）/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/01/IOS富文本-Coretext学习教程（一）/" title="IOS富文本-Coretext学习教程（一）" itemprop="url">IOS富文本-Coretext学习教程（一）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-01T06:00:00.000Z" itemprop="datePublished"> 发表于 2016-03-01</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>最近，趁着项目产品迭代空闲，基于coretext写了一个支持富文本的控件，现在来分享一下。</p>
+<h1 id="CoreText-简介"><a href="#CoreText-简介" class="headerlink" title="CoreText 简介"></a>CoreText 简介</h1><p>CoreText 是苹果公司一个开放出来的用于文本控件绘制的底层控件。它是我们经常使用的UILabel、UIButton等基础控件的底层实现技术，它是对底层绘制框架 Core Graphics 进行一定程度的封装处理，将文字和图片渲染到界面上。CoreText 可以处理复杂的文本内容、位置、字体、字形，并将绘制的信息高效的传递给绘制引擎。</p>
+<p><img src="http://qilishare.org/postImage/CoreText学习教程/1.png" alt="排版引擎层级图"><br>可以看到，CoreTextC 是 WebKit 和 ios7 后才有 TextKit 的文字排版基础框架。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/03/01/IOS富文本-Coretext学习教程（一）/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/coretext/">coretext</a><a href="/tags/自定义控件/">自定义控件</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/03/01/IOS富文本-Coretext学习教程（一）/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/03/01/IOS富文本-Coretext学习教程（一）/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/01/27/Instruments调研/" title="使用Instruments工具进行性能优化" itemprop="url">使用Instruments工具进行性能优化</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-01-27T06:00:00.000Z" itemprop="datePublished"> 发表于 2016-01-27</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>Instruments 是应用程序用来动态跟踪和分析 Mac OS X 和 iOS 代码的实用工具。Instruments 下有各种功能，但今天就只对个人认为比较实用的 Time Profiler 、Core Animation 、Leak 和 Allocation 这四个工具进行调研。</p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/01/27/Instruments调研/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/性能优化/">性能优化</a><a href="/tags/深入浅出/">深入浅出</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/01/27/Instruments调研/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/01/27/Instruments调研/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/01/22/制作简单实用的ImagePicker/" title="制作简单实用的ImagePicker" itemprop="url">制作简单实用的ImagePicker</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="麦家村村书记" target="_blank" itemprop="author">麦家村村书记</a>
+		
+  <p class="article-time">
+    <time datetime="2016-01-22T03:44:40.000Z" itemprop="datePublished"> 发表于 2016-01-22</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>效果预览<br><img src="http://qilishare.org/postImage/制作简单实用的ImagePicker/3.PNG" alt="相册预览"><br>git <a href="https://github.com/maiqili/QLImagePicker.git">https://github.com/maiqili/QLImagePicker.git</a></p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/01/22/制作简单实用的ImagePicker/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/ios/">ios</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/控件/">控件</a><a href="/tags/简单实用/">简单实用</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/01/22/制作简单实用的ImagePicker/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/01/22/制作简单实用的ImagePicker/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+
+  <nav id="page-nav" class="clearfix">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
+  </nav>
+
+</div>
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/ios/" title="ios">ios<sup>5</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/技术分享/" title="技术分享">技术分享<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/coretext/" title="coretext">coretext<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/自定义控件/" title="自定义控件">自定义控件<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/控件/" title="控件">控件<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/简单实用/" title="简单实用">简单实用<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/性能优化/" title="性能优化">性能优化<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/深入浅出/" title="深入浅出">深入浅出<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/blog/" title="blog">blog<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> “我是一枚专注于IOS的攻城狮&quot; <br/>
+			“希望能和大家互相学习，一起成长”</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/1852525747" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/maiqili" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/qi-li-67-79" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:517184297@qq.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="麦家村村书记">麦家村村书记</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?199a62a1066f0631b339bb0186bffedc";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+ </html>
